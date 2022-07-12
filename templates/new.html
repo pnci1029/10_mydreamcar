@@ -30,18 +30,33 @@
     <style type="text/css">
         * {
             font-family: "Stylish", sans-serif;
-        *}
+        }
+
+
+        .navbar {
+            background-color: beige;
+            height: 70px;
+        }
+
+        .button {
+
+        }
 
         .dispay {
             background-image: url("https://image.cnbcfm.com/api/v1/image/106429544-1583520556948gemera_exterior_5_high.jpg?v=1583520680&w=740&h=416");
+            background-position: center;
+
+
             height: 300px;
             width: 700px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: auto;
+            margin: 15px auto;
             background-position: 1% center;
+            border:  3px solid slategrey;
+
 
         }
 
@@ -97,7 +112,8 @@
 
 
     </script>
-<nav class="navbar" role="navigation" aria-label="main navigation">
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
             <a class="navbar-home" href="/">
             <button class="button is-primary" style="margin-left: 10px">MyDreamCar</button>
@@ -117,7 +133,7 @@
     <div class="navbar-end">
     <div class="navbar-item">
     <div class="buttons">
-    <a class="button is-primary">
+    <a class="button is-primary" href="/">
         <strong>닉네임</strong>
     </a>
     <a class="button is-danger" onclick="sign_out()">
