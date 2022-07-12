@@ -21,16 +21,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
     <!-- 구글폰트 -->
-{#    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">#}
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
 
 
     <title>MyDreamCar</title>
 
     <!-- style -->
     <style type="text/css">
-        {#* {#}
-        {#    font-family: "Stylish", sans-serif;#}
-        {#}#}
+        * {
+            font-family: "Stylish", sans-serif;
+        *}
 
         .dispay {
             background-image: url("https://image.cnbcfm.com/api/v1/image/106429544-1583520556948gemera_exterior_5_high.jpg?v=1583520680&w=740&h=416");
@@ -42,8 +42,13 @@
             align-items: center;
             margin: auto;
             background-position: 1% center;
-            color: white;
 
+        }
+
+        .dispay1 {
+            color: white;
+            font-size: 50px;
+            margin-top: 200px;
 
         }
 
@@ -129,7 +134,7 @@
 <body>
 <div class="wrap">
     <div class="dispay">
-        <h3>당신은 이미 운전석에 앉아있다</h3>
+        <h1 class="dispay1">그 차는 당신의 것!</h1>
     </div>
     <div id="post-box" class="form-post">
         <div>
