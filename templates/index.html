@@ -50,8 +50,11 @@
         $(document).ready(function () {
             showArticles();
         });
-            {#따봉 설정#}
-            function toggle_like(post_id, type) {
+
+
+        // 따봉설정
+
+        function toggle_like(post_id, type) {
             console.log(post_id, type)
             let $a_like = $(`#${post_id} a[aria-label='thumbs-up']`)
             let $i_like = $a_like.find("i")
@@ -73,7 +76,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "/update_like",
+                    url: "/user/<username>/",
                     data: {
                         post_id_give: post_id,
                         type_give: type,
@@ -89,6 +92,8 @@
             }
         }
 
+
+
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
             alert('로그아웃 하셨습니다.!')
@@ -96,7 +101,8 @@
         }
 
 
-        {#시간설정#}
+        // 시간설정
+
         function time2str(date) {
             let today = new Date()
             let time = (today - date) / 1000 / 60  // 분
@@ -118,8 +124,8 @@
 
         function showArticles(username) {
             if (username == undefined) {
-                 username = ""
-                 }
+                username = ""
+            }
             $.ajax({
                 type: "GET",
                 url: `/memo?username_give=${username}`,
@@ -136,19 +142,23 @@
                         let post = drcar[i]
                         let class_heart = post['heart_by_me'] ? "fa-thumbs-up" : "fa-thumbs-o-up"
                         let count_heart = drcar['count_heart']
-                        let _id = drcar['_id']
+                        let count = drcar[i]['count']
+                        if(count == null){
+                            count = ""
+                        }
 
-
+                    {#${post['username']}#}
                         let temp_html = `<div class="col">
                                             <div class="card">
-                                              <a href="/user/${post['username']}/${_id}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+                                              <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
                                               <div class="card-body">
                                                 <h5 class="card-title">가격: ${price}</h5>
+                                                <h5 class="card-title">카운트: ${count}</h5>
                                                <h5 class="card-title">작성자:  ${username}</h5>
                                                 <p class="card-text">설명: ${desc}</p>
                                                         <a class="level-item is-sparta" aria-label="thumbs-up" onclick="toggle_like('${post['_id']}', 'thumbs-up')">
                                                             <span class="icon is-small"><i class="fa ${class_heart}"
-                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${count_heart}</span>
+                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">2.7k</span>
                                                         </a>
                                               </div>
                                             </div>
@@ -167,9 +177,9 @@
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-            <a class="navbar-home" href="/">
+        <a class="navbar-home" href="/">
             <button class="button is-primary" style="margin-left: 26px">MyDreamCar</button>
-            </a>
+        </a>
 
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
@@ -178,29 +188,28 @@
         </a>
     </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+    <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-    </div>
+        </div>
 
-    <div class="navbar-end">
-    <div class="navbar-item">
-    <div class="buttons">
-    <a class="button is-primary" href=/user/<username>">
-        <strong>닉네임</strong>
-    </a>
-    <a class="button is-danger" onclick="sign_out()">
-    Log Out
-    </a>
-    </div>
-    </div>
-    </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-primary" href="/">
+                        <strong>닉네임</strong>
+                    </a>
+                    <a class="button is-danger" onclick="sign_out()">
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
 <div class="title">
     <h1><a href="/">My Dream Car</a></h1>
 </div>
-
 
 
 <a class="btn text-muted" href="/register">내 드림카 등록하기</a>
