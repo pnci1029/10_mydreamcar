@@ -29,10 +29,9 @@
 
     <style type="text/css">
 
-       * {
-           font-family: "Stylish", sans-serif;
-       }
-
+        * {
+            font-family: "Stylish", sans-serif;
+        }
 
 
         .navbar {
@@ -40,137 +39,170 @@
             height: 70px;
         }
 
-         .dispay {
-            background-image: url("https://image.cnbcfm.com/api/v1/image/106429544-1583520556948gemera_exterior_5_high.jpg?v=1583520680&w=740&h=416");
-            background-position: center;
+
+        .profile {
+            background-color: gray;
+            max-width: 1400px;
+            width: 95%;
+            height: 300px
 
 
-            height: 300px;
-            width: 700px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 15px auto;
-            background-position: 1% center;
-            border:  3px solid slategrey;
-
-
-        }
-
-        .dispay1 {
-            color: white;
-            font-size: 50px;
-            margin-top: 200px;
-
-        }
-
-        .wrap {
-            width: 900px;
-            margin: auto;
-        }
-
-
-        #post-box {
-            width: 500px;
-            margin: 20px auto;
-            padding: 50px;
-            border: black solid;
-            border-radius: 5px;
         }
     </style>
     <script>
 
-        function postArticle() {
-
-            let desc = $('#post-desc').val()
-            let price = $('#post-price').val()
-
-            let file = $('#file')[0].files[0]
-            let form_data = new FormData()
-
-            form_data.append("file_give", file)
-            form_data.append("desc_give", desc)
-            form_data.append("price_give", price)
-
-            $.ajax({
-                type: "POST",
-                url: "/memo",
-                data: form_data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    alert(response["msg"])
-                        window.location.href="/"
-
-                }
-            });
-        }
-
+        {#function showArticles(username) {#}
+        {#    $.ajax({#}
+        {#        type: "GET",#}
+        {#        url: `/user/<username>`,#}
+        {#        data: {},#}
+        {#        success: function (response) {#}
+        {##}
+        {#            let drcar = response['drcars']#}
+        {#            for (let i = 0; i < drcar.length; i++) {#}
+        {##}
+        {#                let desc = drcar[i]['desc']#}
+        {#                let price = drcar[i]['price']#}
+        {#                let file = drcar[i]['file']#}
+        {#                let username = drcar[i]['username']#}
+        {#                let post = drcar[i]#}
+        {#                let count = drcar[i]['count']#}
+        {#                if (count == null) {#}
+        {#                    count = ""#}
+        {#                }#}
+        {##}
+        {#                let temp_html = `<div class="col">#}
+        {#                                    <div class="card">#}
+        {#                                        <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>#}
+        {#                                        <div class="card-body">#}
+        {#                                            <h5 class="card-title">가격: ${price}</h5>#}
+        {#                                            <h5 class="card-title">카운트: ${count}</h5>#}
+        {#                                            <h5 class="card-title">작성자: ${username}</h5>#}
+        {#                                            <p class="card-text">설명: ${desc}</p>#}
+        {#                                        </div>#}
+        {#                                    </div>#}
+        {#                                </div>`#}
+        {##}
+        {#                $('#here').append(temp_html)#}
+        {#            }#}
+        {#        }#}
+        {#    })#}
+        {#}#}
 
     </script>
 
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-            <a class="navbar-home" href="/">
-            <button class="button is-primary" style="margin-left: 10px">MyDreamCar</button>
-            </a>
 
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+</head>
+
+<body>
+
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-home" href="/">
+            <button class="button is-primary" style="margin-left: 10px">MyDreamCar</button>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+           data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
         </a>
     </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+    <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-    </div>
+        </div>
 
-    <div class="navbar-end">
-    <div class="navbar-item">
-    <div class="buttons">
-    <a class="button is-primary" href="/">
-        <strong>닉네임</strong>
-    </a>
-    <a class="button is-danger" onclick="sign_out()">
-    Log Out
-    </a>
-    </div>
-    </div>
-    </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-primary" href="/">
+                        <strong> useraaa_inf님, 안녕하세요</strong>
+                    </a>
+                    <a class="button is-danger" onclick="sign_out()">
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
-</head>
+<div class="profile">
 
-<body>
-<div class="wrap">
-    <div class="dispay">
-        <h1 class="dispay1">그 차는 당신의 것!</h1>
-    </div>
-    <div id="post-box" class="form-post">
-        <div>
-            <div class="form-group">
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="file">
-                    <label class="input-group-text" for="file">업로드</label>
-                </div>
+    <h1>하하호호</h1>
+
+</div>
+
+<div class="row row-cols-1 row-cols-md-4 g-4" id="here">
+
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
             </div>
-            <div class="form-group">
-                <label for="post-desc">내 드림카 자랑하기</label>
-                <textarea id="post-desc" class="form-control" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="post-price">가격은?</label>
-                <input id="post-price" class="form-control" placeholder="만원 단위 입력">
-            </div>
-            <button onclick="postArticle()" type="button" class="btn btn-outline-dark">차등록</button>
         </div>
     </div>
-    <div id="cards-box" class="card-columns">
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
+            </div>
+        </div>
     </div>
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <a href="/user/${count}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">가격: ${price}</h5>
+                <h5 class="card-title">카운트: ${count}</h5>
+                <h5 class="card-title">작성자: ${username}</h5>
+                <p class="card-text">설명: ${desc}</p>
+            </div>
+        </div>
     </div>
 </div>
 

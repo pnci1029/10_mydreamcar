@@ -5,16 +5,14 @@ import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import certifi
+
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-ca= certifi.where()
-client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbsparta
 
 
@@ -23,7 +21,7 @@ def main():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.cars.find_one({"username": payload["id"]})
+        user_info = db.users.find_one({"username": payload["id"]})
         return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
@@ -31,29 +29,12 @@ def main():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
     return render_template('index.html')
 
-# @app.route('/')
-# def user_list():
-#     token_receive = request.cookies.get('mytoken')
-#     try:
-#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-#         user_list = db.cars.find({}, {'_id': False})
-#         return render_template('user_detail.html',user_list=user_list)
-
 
 @app.route('/register')
 def create():
     return render_template('new.html')
 
-# 각 유저 댓글작성을 위한 페이지
-# @app.route('/user/<username>', methods=['GET'])
-# def detail(count):
-#     data = db.cars.find_one({'id':count},{'_id':False})
-#     numb =  list(db.comment.find({'count':count},{'_id':False}))
-#     target = {
-#         'data':data,
-#         'count': numb
-#     }
-#     return render_template('user.html')
+
 @app.route('/edit')
 def edit():
     return render_template('edit.html')
@@ -64,7 +45,7 @@ def home():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.cars.find_one({"username": payload["id"]})
+        user_info = db.users.find_one({"username": payload["id"]})
         return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
@@ -78,7 +59,7 @@ def login():
     return render_template('login.html', msg=msg)
 
 
-@app.route('/<username>')
+@app.route('/user/<username>')
 def user(username):
     # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
     token_receive = request.cookies.get('mytoken')
@@ -86,7 +67,7 @@ def user(username):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
-        user_info = db.cars.find_one({"username": username}, {"_id": False})
+        user_info = db.users.find_one({"username": username}, {"_id": False})
         return render_template('user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -96,8 +77,6 @@ def user(username):
 def web_mars_get():
     car_list = list(db.cars.find({}, {'_id': False}))
     return jsonify({'drcars': car_list})
-
-
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -126,14 +105,10 @@ def sign_up():
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    desc_receive = request.form['desc_give']
-
     doc = {
         "username": username_receive,  # 아이디
         "password": password_hash,  # 비밀번호
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
-        "desc": desc_receive,  # 글쓰기
-
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
@@ -162,9 +137,9 @@ def get_posts():
 
         for post in posts:
             post["_id"] = str(post["_id"])
-            post["count_heart"] = db.likes.count_documents({"post_id": post["_id"], "type": "heart"})
+            post["count_heart"] = db.likes.count_documents({"post_id": post["_id"], "type": "thumbs-up"})
             post["heart_by_me"] = bool(
-                db.likes.find_one({"post_id": post["_id"], "type": "heart", "username": payload['id']}))
+                db.likes.find_one({"post_id": post["_id"], "type": "thumbs-up", "username": payload['id']}))
         return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "cars": posts})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -175,7 +150,7 @@ def update_like():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.cars.find_one({"username": payload["id"]})
+        user_info = db.users.find_one({"username": payload["id"]})
         post_id_receive = request.form["post_id_give"]
         type_receive = request.form["type_give"]
         action_receive = request.form["action_give"]
@@ -193,45 +168,16 @@ def update_like():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-@app.route('/update_profile', methods=['POST'])
-def save_img():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        username = payload["id"]
-        name_receive = request.form["name_give"]
-        about_receive = request.form["about_give"]
-        price_receive = request.form["price_give"]
-        new_doc = {
-            "profile_name": name_receive,
-            "profile_info": about_receive,
-            "profile_price": price_receive
-        }
-        if 'file_give' in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/"+file_path)
-            new_doc["profile_pic"] = filename
-            new_doc["profile_pic_real"] = file_path
-        db.users.update_one({'username': payload['id']}, {'$set':new_doc})
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
 
 @app.route('/memo', methods=['POST'])
 def posting():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.cars.find_one({"username": payload["id"]})
+        user_info = db.users.find_one({"username": payload["id"]})
         desc_receive = request.form["desc_give"]
         price_reveice = request.form["price_give"]
         file = request.files["file_give"]
-        count_list = list(db.cars.find({}, {'_id': False}))
-        count = len(count_list) +1
 
         extension = file.filename.split('.')[-1]
 
@@ -244,11 +190,10 @@ def posting():
         file.save(save_to)
         doc = {
             "username": user_info["username"],
-            "profile_name": user.info["profile_name"],
+            "profile_name": user_info["profile_name"],
             'price': price_reveice,
             "desc": desc_receive,
-            'file': f'{imagename}.{extension}',
-            'count': count
+            'file': f'{imagename}.{extension}'
         }
         db.cars.insert_one(doc)
         return jsonify({"result": "success", 'msg': '등록 성공'})
@@ -286,9 +231,6 @@ def posting():
 #     db.cars.insert_one(doc)
 #
 #     return jsonify({'msg':'등록이 완료되었습니다!'})
-
-
-# 프로필 기능 구현
 
 
 if __name__ == '__main__':
