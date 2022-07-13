@@ -1,0 +1,13 @@
+diff a/app.py b/app.py	(rejected hunks)
+@@ -13,7 +13,10 @@
+ 
+ SECRET_KEY = 'SPARTA'
+ 
+-client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority')
++
++
++ca = certifi.where()
++client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority',tlsCAFile=ca)
+ db = client.dbsparta
+ 
+ 
