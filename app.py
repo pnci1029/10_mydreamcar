@@ -2,18 +2,17 @@ from pymongo import MongoClient
 import jwt
 import datetime
 import hashlib
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for,  json, jsonify
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import certifi
+
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 SECRET_KEY = 'SPARTA'
 
-ca= certifi.where()
-client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://test:sparta123@cluster0.g2dpd.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbsparta
 
 
@@ -120,7 +119,6 @@ def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
-
 
 
 # 목록 조회하기
