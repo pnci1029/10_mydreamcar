@@ -24,7 +24,7 @@
     <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
 
 
-    <title>MyDreamCar</title>
+    <title> | SWEETER</title>
 
 
     <style type="text/css">
@@ -81,40 +81,31 @@
     </style>
     <script>
 
-        function detail(count) {
+        function postArticle() {
+
+            let desc = $('#post-desc').val()
+            let price = $('#post-price').val()
+
+            let file = $('#file')[0].files[0]
+            let form_data = new FormData()
+
+            form_data.append("file_give", file)
+            form_data.append("desc_give", desc)
+            form_data.append("price_give", price)
+
             $.ajax({
-                type: 'GET',
-                url: '/memo',
-                data: {},
+                type: "POST",
+                url: "/memo",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
                 success: function (response) {
-                    console.log(response)
-
-                    for(let i=0; i<rows.length; i++){
-                        let title = rows[i]['title']
-                        let img = rows[i]['img']
-                        let des = rows[i]['des']
-                        let star = rows[i]['star']
-                        let comment = rows[i]['comment']
-
-
-                        let temp_html = ` <div class="col">
-                                            <div class="card h-100">
-                                                <img src="${img}"
-                                                     class="card-img-top">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">${title}</h5>
-                                                    <p class="card-text">${des}</p>
-                                                    <p>${star_image}</p>
-                                                    <p class="mycomment">${comment}</p>
-                                                </div>
-                                            </div>
-                                        </div>`
-
-                        $('#cards-box').append(temp_html)
-                    }
+                    alert(response["msg"])
+                        window.location.href="/"
 
                 }
-            })
+            });
         }
 
 
@@ -156,10 +147,33 @@
 
 <body>
 <div class="wrap">
-
+    <div class="dispay">
+        <h1 class="dispay1">그 차는 당신의 것!</h1>
+    </div>
+    <div id="post-box" class="form-post">
+        <div>
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="file">
+                    <label class="input-group-text" for="file">업로드</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="post-desc">내 드림카 자랑하기</label>
+                <textarea id="post-desc" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="post-price">가격은?</label>
+                <input id="post-price" class="form-control" placeholder="만원 단위 입력">
+            </div>
+            <button onclick="postArticle()" type="button" class="btn btn-outline-dark">차등록</button>
+        </div>
+    </div>
     <div id="cards-box" class="card-columns">
     </div>
+    </div>
 </div>
+
 </body>
 
 </html>

@@ -24,7 +24,8 @@ def main():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.users.find_one({"username": payload["id"]})
-        return render_template('index.html', user_info=user_info)
+        price_info = db.users.find_one({"price": payload["id"]})
+        return render_template('index.html', user_info=user_info, price_info=price_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -37,18 +38,15 @@ def create():
     return render_template('new.html')
 
 # 각 유저 댓글작성을 위한 페이지
-@app.route('/user/<count>')
+@app.route('/user/<count>', methods=['GET'])
 def detail(count):
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        status = (count == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-
-        user_info = db.users.find_one({"count": count}, {"_id": False})
-        return render_template('user_detail.html', user_info=user_info, status=status)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
+    data = db.cars.find_one({'id':count},{'_id':False})
+    numb =  list(db.comment.find({'count':count},{'_id':False}))
+    target = {
+        'data':data,
+        'count': numb
+    }
+    return render_template('user_detail.html')
 @app.route('/edit')
 def edit():
     return render_template('edit.html')
@@ -59,7 +57,7 @@ def home():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]})
+        user_info = db.cars.find_one({"username": payload["id"]})
         return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
@@ -81,8 +79,8 @@ def user(username):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
-        user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template('user.html', user_info=user_info, status=status)
+        user_info = db.cars.find_one({"username": username}, {"_id": False})
+        return render_template('index.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -188,7 +186,7 @@ def posting():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.users.find_one({"username": payload["id"]})
+        user_info = db.cars.find_one({"username": payload["id"]})
         desc_receive = request.form["desc_give"]
         price_reveice = request.form["price_give"]
         file = request.files["file_give"]
@@ -207,7 +205,7 @@ def posting():
         doc = {
             "username": user_info["username"],
             "profile_name": user_info["profile_name"],
-            'price': price_reveice,
+            'price': user_info["price_reveice"],
             "desc": desc_receive,
             'file': f'{imagename}.{extension}',
             'count': count
