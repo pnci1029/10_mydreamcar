@@ -53,6 +53,7 @@
             showArticles();
         });
             {#따봉 설정#}
+            // 따봉설정
             function toggle_like(post_id, type) {
             console.log(post_id, type)
             let $a_like = $(`#${post_id} a[aria-label='thumbs-up']`)
@@ -97,7 +98,7 @@
             window.location.href = "/login"
         }
 
-        {#시간설정#}
+        // 시간설정
         function time2str(date) {
             let today = new Date()
             let time = (today - date) / 1000 / 60  // 분
