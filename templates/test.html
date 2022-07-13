@@ -6,25 +6,48 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+
+        function regicomment() {
+
+            let comment = $('#post-comment').val()
+
+            console.log(comment)
+
+
+
+        }
+
+
+
+
+
+
+
+
+    </script>
 </head>
 <body>
 
 <article class="media">
+
+<!--댓글 창 옆 프로필 사진-->
 <!--    <figure class="media-left">-->
 <!--        <p class="image is-64x64">-->
 <!--            <img src="https://bulma.io/images/placeholders/128x128.png">-->
 <!--        </p>-->
 <!--    </figure>-->
     <div class="media-content">
-        <div class="field" >
+        <div id="post-comment" class="field" >
             <p class="control" style=" width:400px;">
-                <textarea class="textarea" placeholder="Add a comment..."></textarea>
+                <textarea  class="textarea" placeholder="댓글을 입력하세요"></textarea>
             </p>
         </div>
         <nav class="level">
             <div class="level-left">
                 <div class="level-item">
-                    <a class="button is-info">댓글등록</a>
+                    <button type="button" onclick="regicomment()" class="button is-info">댓글등록</button>
                 </div>
             </div>
             <div class="level-right">
