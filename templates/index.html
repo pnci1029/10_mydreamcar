@@ -136,18 +136,19 @@
                         let post = drcar[i]
                         let class_heart = post['heart_by_me'] ? "fa-thumbs-up" : "fa-thumbs-o-up"
                         let count_heart = drcar['count_heart']
+                        let _id = drcar['_id']
 
 
                         let temp_html = `<div class="col">
                                             <div class="card">
-                                              <a href="/user/${post['username']}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
+                                              <a href="/user/${post['username']}/${_id}"><img src="../static/${file}" class="card-img-top" alt="..."></a>
                                               <div class="card-body">
                                                 <h5 class="card-title">가격: ${price}</h5>
                                                <h5 class="card-title">작성자:  ${username}</h5>
                                                 <p class="card-text">설명: ${desc}</p>
                                                         <a class="level-item is-sparta" aria-label="thumbs-up" onclick="toggle_like('${post['_id']}', 'thumbs-up')">
                                                             <span class="icon is-small"><i class="fa ${class_heart}"
-                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">2.7k</span>
+                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${count_heart}</span>
                                                         </a>
                                               </div>
                                             </div>
@@ -184,7 +185,7 @@
     <div class="navbar-end">
     <div class="navbar-item">
     <div class="buttons">
-    <a class="button is-primary" href="/">
+    <a class="button is-primary" href=/user/<username>">
         <strong>닉네임</strong>
     </a>
     <a class="button is-danger" onclick="sign_out()">

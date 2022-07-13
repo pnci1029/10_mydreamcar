@@ -9,7 +9,6 @@ import certifi
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
@@ -180,6 +179,8 @@ def posting():
         desc_receive = request.form["desc_give"]
         price_reveice = request.form["price_give"]
         file = request.files["file_give"]
+        count_list = list(db.cars.find({}, {'_id': False}))
+        count = len(count_list) + 1
 
         extension = file.filename.split('.')[-1]
 
@@ -195,7 +196,9 @@ def posting():
             "profile_name": user_info["profile_name"],
             'price': price_reveice,
             "desc": desc_receive,
+            'count': count,
             'file': f'{imagename}.{extension}'
+
         }
         db.cars.insert_one(doc)
         return jsonify({"result": "success", 'msg': '등록 성공'})
